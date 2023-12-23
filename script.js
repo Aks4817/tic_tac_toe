@@ -1,4 +1,3 @@
-
 function boarde() {
     const row = 3;
     const col = 3;
@@ -43,6 +42,7 @@ function boarde() {
                 board[i][j] = '';
             }
         }
+        hideVictoryLine();
     }
     const getboard = () => board;
     const addtoken = (i, j) => {
@@ -56,7 +56,6 @@ function boarde() {
             console.log(board[i])
         }
     };
-
     const iswon = () => {
         // Check rows
         for (let i = 0; i < 3; i++) {
@@ -84,13 +83,73 @@ function boarde() {
         // No winner
         return 0;
     };
+    const haswon = () => {
+        // Check rows
+        for (let i = 0; i < 3; i++) {
+            if (board[i][0] === board[i][1] && board[i][1] === board[i][2] &&board[i][2]!='') {
+                if (i == 0) {
+                    adjustVictoryLine('-100px');
+                } else if (i == 2) {
+                    adjustVictoryLine('100px');
+                }
+                showVictoryLine();
+                return board[i][0];
+            }
+        }
+
+        // Check columns
+        for (let j = 0; j < 3; j++) {
+            if (board[0][j] === board[1][j] && board[1][j] === board[2][j] &&board[0][j]!=='') {
+                console.log(board[0][j]);
+                if (j == 0) {
+                    adjustVictoryLine('-100px', '-90deg');
+                  } else if (j == 1) {
+                    adjustVictoryLine('0px', '-90deg');
+                  } else if (j == 2) {
+                    adjustVictoryLine('100px', '-90deg');
+                  }
+                  showVictoryLine();
+                return board[0][j];
+                
+            }
+        }
+
+        // Check diagonals
+        if (board[0][0] === board[1][1] && board[1][1] === board[2][2]&&board[1][1]!='') {
+            adjustVictoryLine('0px', '45deg', '1.3');
+            showVictoryLine();
+            return board[0][0];
+        }
+
+        if (board[0][2] === board[1][1] && board[1][1] === board[2][0]&&board[1][1]!='') {
+            adjustVictoryLine('0px', '-45deg', '1.3');
+            showVictoryLine();
+            return board[0][2];
+        }
+
+        // No winner
+        return 0;
+    };
+
+    const showVictoryLine = () => {
+        document.getElementById('victory-line').style.display = 'flex';
+    }
+
+    const hideVictoryLine = () => {
+        document.getElementById('victory-line').style.display = 'none';
+    }
+    const adjustVictoryLine = (moveY, rotate = '0deg', length = '1') => {
+        let victoryLine = document.getElementById('victory-line');
+        victoryLine.style.transform = `rotate(${rotate}) translateY(${moveY}) scaleX(${length})`;
+    }
+
     const printCards = () => {
         document.getElementById('user-score').textContent = `(${players[0].token}) ${players[0].name}: ${players[0].score}`;
         document.getElementById('computer-score').textContent = `(${players[1].token}) ${players[1].name}: ${players[1].score}`;
     }
     const getactiveplayer = () => activePlayer;
 
-    return { getboard, addtoken, printboard, iswon, printCards, reset, switchPlayerTurn, getPlayer, getactiveplayer };
+    return { getboard, addtoken, printboard, iswon, printCards, reset, switchPlayerTurn, getPlayer, getactiveplayer, showVictoryLine, hideVictoryLine, adjustVictoryLine,haswon};
 
 };
 
@@ -99,7 +158,7 @@ function boarde() {
 function game(play) {
     let count = 0;
     let mode = 1;
-    let difficulty=0;       //0ease 1med 2hard
+    let difficulty = 2;       //0ease 1med 2hard
 
     const takeTurn = async (rowNumber, colNumber) => {
         if (isNaN(rowNumber) || isNaN(colNumber) || rowNumber < 0 || rowNumber > 2 || colNumber < 0 || colNumber > 2) {
@@ -121,10 +180,10 @@ function game(play) {
                     play.printCards();
                     play.reset();
                     count = 0;
-                }, 101);  
+                }, 101);
             } else {
                 play.switchPlayerTurn();
-                const winner = play.iswon();
+                const winner = play.haswon();
 
                 if (winner) {
                     console.log(`${winner} wins!`);
@@ -134,11 +193,11 @@ function game(play) {
                         alert(`${winner === "X" ? play.getPlayer()[0].name : play.getPlayer()[1].name} wins`);
                         play.reset();
                         count = 0;
-                    }, 101);  
+                    }, 101);
                 } else {
                     if (mode === 1) {
                         computerTurn();
-                         
+
                     }
                 }
             }
@@ -175,24 +234,24 @@ function game(play) {
         }
         // console.log(temp);
         let turn
-        if(difficulty===0){
-            turn= available[Math.floor(Math.random() * available.length)];
+        if (difficulty === 0) {
+            turn = available[Math.floor(Math.random() * available.length)];
         }
-        else if(difficulty===1){
-            if(Math.random<0.5){
-                turn= available[Math.floor(Math.random() * available.length)];
+        else if (difficulty === 1) {
+            if (Math.random < 0.5) {
+                turn = available[Math.floor(Math.random() * available.length)];
             }
-            else{
-                turn=move;
+            else {
+                turn = move;
             }
         }
-        else{
-            turn=move;
+        else {
+            turn = move;
         }
         play.addtoken(turn.i, turn.j);
         // play.printboard();
         count++;
-        
+
         // console.log(available);
 
 
@@ -207,9 +266,9 @@ function game(play) {
                 play.printCards();
                 play.reset();
                 count = 0;
-            }, 101);  
+            }, 101);
         } else {
-            const winner = play.iswon();
+            const winner = play.haswon();
             if (winner) {
                 console.log(`${winner} wins!`);
                 winner === "X" ? play.getPlayer()[0].score++ : play.getPlayer()[1].score++;
@@ -218,7 +277,7 @@ function game(play) {
                     alert(`${winner === "X" ? play.getPlayer()[0].name : play.getPlayer()[1].name} wins`);
                     play.reset();
                     count = 0;
-                }, 101);  
+                }, 101);
             } else {
                 play.switchPlayerTurn();
             }
@@ -292,18 +351,18 @@ function game(play) {
         }
     }
 
-    const toggleDifficulty=()=>{
-        if(difficulty===0){
-            difficulty=1;
+    const toggleDifficulty = () => {
+        if (difficulty === 0) {
+            difficulty = 1;
             document.getElementById("difficulty-btn").innerText = 'Difficulty: Medium'
         }
-        else if(difficulty===1){
-            difficulty=2;
+        else if (difficulty === 1) {
+            difficulty = 2;
             document.getElementById("difficulty-btn").innerText = 'Difficulty: Hard'
-            
+
         }
-        else{
-            difficulty=0;
+        else {
+            difficulty = 0;
             document.getElementById("difficulty-btn").innerText = 'Difficulty: Easy'
 
         }
@@ -314,6 +373,7 @@ function game(play) {
         play.getPlayer()[1].score = 0;
         play.printCards();
         document.getElementById("change-mode-btn").innerText = 'Click For Single Player'
+        reset();
     }
 
     const reset = () => {
@@ -323,9 +383,10 @@ function game(play) {
         gam.reset();
         play.printCards();
         play.printboard();
+        play.hideVictoryLine();
     }
 
-    return { takeTurn, reset, modechange, startgame, computerTurn,toggleDifficulty};
+    return { takeTurn, reset, modechange, startgame, computerTurn, toggleDifficulty };
 
 }
 
@@ -333,6 +394,4 @@ function game(play) {
 const play = boarde();
 var gam = game(play);
 play.printCards();
-
-
 
