@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic-Tac-Toe</title>
+  <link rel='stylesheet' href='styles.css'>
+  <script src='script.js' defer></script>
+</head>
+<body>
+  <h1>Tic-Tac-Toe</h1>
+  <div id='game-board-container'>
+    <div id='victory-line'></div>
+    <div id='game-board'>
+        <div class="game-tile" id="0" onclick="gam.takeTurn(0,0)"></div>
+        <div class="game-tile" id="1" onclick="gam.takeTurn(0,1)"></div>
+        <div class="game-tile" id="2" onclick="gam.takeTurn(0,2)"></div>
+        <div class="game-tile" id="3" onclick="gam.takeTurn(1,0)"></div>
+        <div class="game-tile" id="4" onclick="gam.takeTurn(1,1)"></div>
+        <div class="game-tile" id="5" onclick="gam.takeTurn(1,2)"></div>
+        <div class="game-tile" id="6" onclick="gam.takeTurn(2,0)"></div>
+        <div class="game-tile" id="7" onclick="gam.takeTurn(2,1)"></div>
+        <div class="game-tile" id="8" onclick="gam.takeTurn(2,2)"></div>
+    </div>
+  </div>
+  <div id="score-card">
+    <div id="user-score"></div>
+    <div id="computer-score"></div>
+  </div>
+  <button id="new-game-btn"onclick="gam.startgame()"  class="game-btn">New Game</button>
+  <button id="change-mode-btn" onclick="gam.modechange()" class="game-btn">Click For Two Player</button>
+  <button id="difficulty-btn" onclick="gam.toggleDifficulty()" class="game-btn">Difficulty: Easy</button>
+  <!-- <div id='pop-up-name-form'>
+    <form id='change-name-form' autocomplete="off">
+      <p>Whats your name?</p>
+      <input type='text' id="name-text-input" placeholder="Name" name='name' required>
+      <button type='submit' class="form-btn">Submit</button>
+      <button class="form-btn" onclick='hideNameForm()' type='button'>Cancel</button>
+    </form>
+  </div> -->
+</body>
+</html>
